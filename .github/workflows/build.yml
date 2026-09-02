@@ -7,14 +7,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Запускаем проверенное Actions-окружение, изолированное от проблем с Python 3.14
-      - name: Build with Buildozer
-        uses: ArtemSuda/buildozer-action@v1
+      # Явно устанавливаем стабильный Python 3.11 на сам сервер GitHub
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          command: buildozer android debug
-          buildozer_version: stable
+          python-version: '3.11'
 
-      # Сохраняем готовый APK файл, чтобы его можно было скачать
+      # Ставим системные пакеты Linux, которые нужны для сборки Android приложений
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libffi-dev libssl-dev build-essential ccache git python3-dev openjdk-17-jdk unzip zip
+          pip install --upgrade pip setuptools wheel
+          pip install buildozer cython
+
+      # Запускаем сборку напрямую, в обход чужих кастомных экшенов
+      - name: Build Android APK
+        run: |
+          export ALLOW_ROOT=1
+          export APP_ALLOW_ROOT=1
+          buildozer android debug
+        env:
+          ALLOW_ROOT: 1
+
+      # Сохраняем готовый файл
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

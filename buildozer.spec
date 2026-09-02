@@ -7,7 +7,7 @@
 
 # (str) Title of your application
 title = PC Monitor
-
+warn_on_root = 0
 # (str) Package name
 package.name = pcmonitor
 

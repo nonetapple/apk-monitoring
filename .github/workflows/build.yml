@@ -1,0 +1,22 @@
+name: Build APK
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # Запускаем проверенное Actions-окружение, изолированное от проблем с Python 3.14
+      - name: Build with Buildozer
+        uses: ArtemSuda/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+
+      # Сохраняем готовый APK файл, чтобы его можно было скачать
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-apk
+          path: bin/*.apk

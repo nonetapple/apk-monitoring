@@ -26,9 +26,8 @@ jobs:
         run: |
           export ALLOW_ROOT=1
           export APP_ALLOW_ROOT=1
-          buildozer android debug
-        env:
-          ALLOW_ROOT: 1
+          yes y | buildozer android debug
+
 
       # Сохраняем готовый файл
       - name: Upload APK

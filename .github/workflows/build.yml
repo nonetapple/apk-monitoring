@@ -19,7 +19,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libffi-dev libssl-dev build-essential ccache git python3-dev openjdk-17-jdk unzip zip
           pip install --upgrade pip setuptools wheel
-          pip install buildozer cython
+          pip install buildozer==1.5.0 cython==0.29.36
 
       # Запускаем сборку напрямую, в обход чужих кастомных экшенов
       - name: Build Android APK

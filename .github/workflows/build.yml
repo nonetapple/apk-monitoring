@@ -22,9 +22,10 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install cython==0.29.36 python-for-android kivy build
 
-      # 3. Собираем APK напрямую с флагами принудительного использования глобального Cython
+      # 3. Собираем APK напрямую с тотальным запретом изоляции окружений сборщика
       - name: Compile Android APK
         run: |
+          export PIP_NO_ISOLATION=0
           export P4A_PIP_OPTIONS="--no-isolation"
           p4a apk \
             --private . \
@@ -38,3 +39,5 @@ jobs:
             --color=always \
             --sdk-niceness=19 \
             --android-api=34
+        env:
+          PIP_NO_ISOLATION: "0"

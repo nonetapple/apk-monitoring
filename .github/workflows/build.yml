@@ -14,17 +14,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Накатываем все компиляторы Linux (чтобы pip сам собрал charset_normalizer из исходников)
+      # 2. Накатываем все компиляторы и утилиты Linux
       - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libffi-dev libssl-dev build-essential ccache git python3-dev unzip zip libltdl-dev
           pip install --upgrade pip setuptools wheel
-          pip install cython==0.29.36 python-for-android kivy
+          pip install cython==0.29.36 python-for-android kivy build
 
-      # 3. Собираем APK напрямую на базе Python 3.14 (версии host и target совпадут на 100%)
+      # 3. Собираем APK напрямую с флагами принудительного использования глобального Cython
       - name: Compile Android APK
         run: |
+          export P4A_PIP_OPTIONS="--no-isolation"
           p4a apk \
             --private . \
             --package=org.pcmonitor.app \
@@ -37,4 +38,3 @@ jobs:
             --color=always \
             --sdk-niceness=19 \
             --android-api=34
-            --pip-options="--no-isolation"

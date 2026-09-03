@@ -24,7 +24,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libffi-dev libssl-dev build-essential ccache git python3-dev unzip zip libltdl-dev autocomplete-ctl
+          sudo apt-get install -y libffi-dev libssl-dev build-essential ccache git python3-dev unzip zip libltdl-dev
           pip install --upgrade pip setuptools wheel
           pip install cython==0.29.36 python-for-android kivy
 

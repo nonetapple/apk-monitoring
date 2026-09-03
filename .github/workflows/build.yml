@@ -7,20 +7,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. Жестко фиксируем Java 17 для Android SDK
+      # 1. Разворачиваем эталонный Java SDK для Gradle
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Разворачиваем эталонный стабильный Python 3.11
+      # 2. Разворачиваем эталонный Python 3.11
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # 3. Накатываем чистые системные зависимости Linux для компиляторов
+      # 3. Накатываем системные зависимости
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -28,9 +28,10 @@ jobs:
           pip install --upgrade pip setuptools wheel
           pip install cython==0.29.36 python-for-android kivy
 
-      # 4. Собираем APK напрямую через ядро python-for-android (в обход багов buildozer)
+      # 4. Собираем APK напрямую с принудительной изоляцией путей Python 3.11
       - name: Compile Android APK
         run: |
+          export P4A_hostpython3=$(which python3.11)
           p4a apk \
             --private . \
             --package=org.pcmonitor.app \
@@ -43,10 +44,3 @@ jobs:
             --color=always \
             --sdk-niceness=19 \
             --android-api=34
-
-      # 5. Вытаскиваем и сохраняем готовый файл
-      - name: Upload Finished APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: program-apk
-          path: "*.apk"
